@@ -1,5 +1,5 @@
-# jinu
-Java algorithm evaluation framework.
+# JINU
+A java algorithm evaluation framework. JINU Is Not a Unit testing framework.
 
 Jinu is an attempt at promoting reproducible research. It allows Java developpers to easily:
 * check the influence of input parameters on an algorithm
