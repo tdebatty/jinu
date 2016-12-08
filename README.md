@@ -74,6 +74,14 @@ JINU will run all iterations for all input values and all algorithms, and produc
 * a dat file containing the results, which can be used with gnuplot or others
 * a complete html report like the one below
 
+This report will contain:
+* the details of the case (name, hashtag, number of iterations, tests, classpath used etc.)
+* the details of the system on which the test was run (JVM memory, number of cores, hostname)
+* the results
+* the statistics regarding these results (average value, standard deviation and 95% confidence interval)
+* the similarity between tests (does test A produce the same average result as test B ?)
+* the source code of the tests
+
 ![JINU Report](./info.debatty.jinu.examples.MyTestCase.png)
 
 
