@@ -72,7 +72,9 @@ public class DummyTest implements TestInterface {
 
 JINU will run all iterations for all input values and all algorithms, and produce two documents:
 * a dat file containing the results, which can be used with gnuplot or others
-* a complete html report like this one: [JINU report](20161208140311.html)
+* a complete html report like the one below
+
+![JINU Report](./info.debatty.jinu.examples.MyTestCase.png)
 
 
 
