@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>{{ report.getCaseName() }}</title>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css' integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp' crossorigin='anonymous'>
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class='container'>
+            <h1>{{ report.title }}</h1>
+            <p>{{ report.time() }}</p>
+
+            <h2>Case details</h2>
+            <p>Test case: {{ report.getCaseName() }}</p>
+            <p>Version: {{ report.getCaseVersion() }}</p>
+            <p>Iterations: {{ report.testcase.iterations }}</p>
+            <p>Tests:</p>
+            <ul>
+                {% for test in report.getTests() %}
+                    <li>{{ test }}</li>
+                    {% endfor %}
+            </ul>
+
+            <p>Classpath:</p>
+            <ul>
+                {% for classpath in report.classpath %}
+                    <li>{{ classpath }}</li>
+                    {% endfor %}
+            </ul>
+
+            <h2>System</h2>
+            <p>Hostname: {{ report.hostname }}</p>
+            <p>Processors (cores): {{ report.getProcessors() }}</p>
+            <p>Memory (MB): {{ report.getMemory() / (1024 * 1024) }}</p>
+
+            <h2>Results</h2>
+            <table class='table table-condensed'>
+                <tr>
+                    <th>Test</th>
+                    <th>Parameter value</th>
+                    <th>r0</th>
+                    <th>time (ms)</th>
+                    <th></th>
+                </tr>
+                {% for result in report.getResults() %}
+                    <tr>
+                        <td>{{ result.test.getClass().getName() }}</td>
+                        <td>{{ result.param_value }}</td>
+                        <td>{{ result.getValue(0) }}</td>
+                        <td>{{ result.runtime }}</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <h2>Confidence intervals</h2>
+            <table class='table table-condensed'>
+                <tr>
+                    <th>Test</th>
+                    <th>Parameter value</th>
+                    <th></th>
+                    <th>r0</th>
+                    <th>time (ms)</th>
+                </tr>
+
+                {% for interval in report.getIntervals() %}
+                    <tr>
+                        <td>{{ interval.test.getClass().getName() }}</td>
+                        <td>{{ interval.param_value }}</td>
+                        <td>mean</td>
+                        <td>{{ interval.values[0].getMean() }}</td>
+                        <td>{{ interval.runtime.getMean() }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ interval.test.getClass().getName() }}</td>
+                        <td>{{ interval.param_value }}</td>
+                        <td>std dev</td>
+                        <td>{{ interval.values[0].getStandardDeviation() }}</td>
+                        <td>{{ interval.runtime.getStandardDeviation() }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ interval.test.getClass().getName() }}</td>
+                        <td>{{ interval.param_value }}</td>
+                        <td>low</td>
+                        <td>{{ interval.values[0].getMinInterval() }}</td>
+                        <td>{{ interval.runtime.getMinInterval() }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>{{ interval.test.getClass().getName() }}</td>
+                        <td>{{ interval.param_value }}</td>
+                        <td>high</td>
+                        <td>{{ interval.values[0].getMaxInterval() }}</td>
+                        <td>{{ interval.runtime.getMaxInterval() }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <h2>Test similarity</h2>
+            <p><a href=\"https://en.wikipedia.org/wiki/Student's_t-test\">Student's
+                    t-test</a>: values above 0.95 indicate both tests produce the
+                same average value.</p>
+
+            <!-- For each parameter value -->
+            {% for param_value in report.getParamValues() %}
+                <h3>Parameter value = {{ param_value }}</h3>
+
+                <h4>r0</h4>
+
+                <table class='table table-condensed table-bordered'>
+                    <tr>
+                        <th></th>
+                        {% for test in report.getTests() %}
+                            <th>{{ test.getClass().getName() }}</th>
+                        {% endfor %}
+                    </tr>
+
+                    {% for test in report.getTests() %}
+                        <tr>
+                            <th>{{ test.getClass().getName() }}</th>
+                            {% for other_test in report.getTests() %}
+                                <td>{{ report.getSimilarity(test, other_test, 0, param_value) }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+
+            <h2>Sources</h2>
+            {% for test in report.getTests() %}
+                <h3>{{ test.getClass().getName() }}</h3>
+                <pre>
+{{ report.getSource(test) }}
+                </pre>
+            {% endfor %}
+        </div>
+    </body>
+</html>
