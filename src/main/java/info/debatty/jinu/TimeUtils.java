@@ -70,7 +70,9 @@ public final class TimeUtils {
                 res.append(temp).append(" minute").append(temp > 1 ? "s" : "");
             }
 
-            if (!res.toString().equals("") && remaining_duration >= ONE_SECOND) {
+            if (
+                    !res.toString().equals("")
+                    && remaining_duration >= ONE_SECOND) {
                 res.append(" and ");
             }
 
