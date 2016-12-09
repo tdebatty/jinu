@@ -60,6 +60,24 @@ public final class TestResult {
      *
      * @return
      */
+    public TestInterface getTest() {
+        return test;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public double getParamValue() {
+        return param_value;
+    }
+
+
+
+    /**
+     *
+     * @return
+     */
     public double[] getValues() {
         return values;
     }

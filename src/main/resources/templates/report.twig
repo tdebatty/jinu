@@ -54,8 +54,8 @@
                 </tr>
                 {% for result in report.getResults() %}
                     <tr>
-                        <td>{{ result.test.getClass().getName() }}</td>
-                        <td>{{ result.param_value }}</td>
+                        <td>{{ result.getTest().getClass().getName() }}</td>
+                        <td>{{ result.getParamValue() }}</td>
                         <td>{{ result.getValue(0) }}</td>
                         <td>{{ result.runtime }}</td>
                         <td></td>
@@ -76,21 +76,21 @@
                 {% for interval in report.getIntervals() %}
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.param_value }}</td>
+                        <td>{{ interval.getParamValue() }}</td>
                         <td>mean</td>
                         <td>{{ interval.values[0].getMean() }}</td>
                         <td>{{ interval.runtime.getMean() }}</td>
                     </tr>
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.param_value }}</td>
+                        <td>{{ interval.getParamValue() }}</td>
                         <td>std dev</td>
                         <td>{{ interval.values[0].getStandardDeviation() }}</td>
                         <td>{{ interval.runtime.getStandardDeviation() }}</td>
                     </tr>
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.param_value }}</td>
+                        <td>{{ interval.getParamValue() }}</td>
                         <td>low</td>
                         <td>{{ interval.values[0].getMinInterval() }}</td>
                         <td>{{ interval.runtime.getMinInterval() }}</td>
@@ -98,7 +98,7 @@
 
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.param_value }}</td>
+                        <td>{{ interval.getParamValue() }}</td>
                         <td>high</td>
                         <td>{{ interval.values[0].getMaxInterval() }}</td>
                         <td>{{ interval.runtime.getMaxInterval() }}</td>
