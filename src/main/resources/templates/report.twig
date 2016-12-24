@@ -143,6 +143,46 @@
 {{ report.getSource(test) }}
                 </pre>
             {% endfor %}
+
+            <canvas id="myChart" width="640" height="480"></canvas>
         </div>
     </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+        var datasets = {{ report.getJsonDatasets() | raw }};
+        var ctx = $("#myChart");
+        var dynamicColor = function() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return "rgb(" + r + "," + g + "," + b + ")";
+        };
+
+        $.each(datasets, function(index, dataset) {
+            var color = dynamicColor();
+            dataset.pointBackgroundColor = color;
+            dataset.pointBorderColor = color;
+            dataset.borderColor = color;
+            dataset.tension = 0;
+
+        });
+
+        //pointBackgroundColor
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                //showLines: false,
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
+    </script>
 </html>

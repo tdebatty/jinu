@@ -24,15 +24,18 @@
 
 package info.debatty.jinu;
 
+import com.google.gson.Gson;
 import java.io.ObjectStreamClass;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 import org.apache.commons.math3.stat.inference.TTest;
 
 /**
@@ -295,5 +298,55 @@ public class CaseResult {
      */
     final void addSource(final TestInterface test, final String test_source) {
         sources.put(test, test_source);
+    }
+
+    public final String getJsonDatasets() {
+
+        HashMap<TestInterface, Dataset> datasets = new HashMap<TestInterface, Dataset>();
+        for (TestInterval interval : getIntervals()) {
+
+            TestInterface test = interval.getTest();
+            Dataset dataset = datasets.get(test);
+            if (dataset == null) {
+                dataset = new Dataset(test.getClass().getSimpleName());
+                datasets.put(test, dataset);
+            }
+            dataset.add(new XY(
+                    interval.getParamValue(),
+                    interval.getValues()[0].getMean()));
+        }
+
+        Gson gson = new Gson();
+        return gson.toJson(datasets.values());
+
+    }
+}
+
+class Dataset {
+    String label;
+    TreeSet<XY> data = new TreeSet<XY>(new Comparator<XY>() {
+
+        public int compare(XY o1, XY o2) {
+            return o1.x >= o2.x ? 1 : -1;
+        }
+    });
+
+    public Dataset(String label) {
+        this.label = label;
+    }
+
+    void add(XY xy) {
+        data.add(xy);
+
+    }
+}
+
+class XY {
+    public double x;
+    public double y;
+
+    public XY(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 }
