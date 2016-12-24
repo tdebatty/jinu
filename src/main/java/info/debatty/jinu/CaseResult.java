@@ -300,9 +300,14 @@ public class CaseResult {
         sources.put(test, test_source);
     }
 
+    /**
+     * Get the JSON representation of the results, to use with GraphJS.
+     * @return
+     */
     public final String getJsonDatasets() {
 
-        HashMap<TestInterface, Dataset> datasets = new HashMap<TestInterface, Dataset>();
+        HashMap<TestInterface, Dataset> datasets =
+                new HashMap<TestInterface, Dataset>();
         for (TestInterval interval : getIntervals()) {
 
             TestInterface test = interval.getTest();
@@ -322,31 +327,47 @@ public class CaseResult {
     }
 }
 
+/**
+ * Represents a single GraphJS dataset.
+ * @author Thibault Debatty
+ */
 class Dataset {
-    String label;
-    TreeSet<XY> data = new TreeSet<XY>(new Comparator<XY>() {
+    private String label;
+    private TreeSet<XY> data = new TreeSet<XY>(new Comparator<XY>() {
 
-        public int compare(XY o1, XY o2) {
-            return o1.x >= o2.x ? 1 : -1;
+        public int compare(final XY o1, final XY o2) {
+            return o1.getX() >= o2.getX() ? 1 : -1;
         }
     });
 
-    public Dataset(String label) {
+    Dataset(final String label) {
         this.label = label;
     }
 
-    void add(XY xy) {
+    void add(final XY xy) {
         data.add(xy);
 
     }
 }
 
+/**
+ * Represents a single GraphJS point.
+ * @author Thibault Debatty
+ */
 class XY {
-    public double x;
-    public double y;
+    private double x;
+    private double y;
 
-    public XY(double x, double y) {
+    XY(final double x, final double y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Return x value.
+     * @return
+     */
+    public double getX() {
+        return x;
     }
 }
