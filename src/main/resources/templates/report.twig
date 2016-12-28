@@ -151,6 +151,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script>
         var datasets = {{ report.getJsonDatasets() | raw }};
+        var title = {{ report.getId() }};
         var ctx = $("#myChart");
         var dynamicColor = function() {
             var r = Math.floor(Math.random() * 255);
@@ -175,7 +176,10 @@
                 datasets: datasets
             },
             options: {
-                //showLines: false,
+                title: {
+                    display: true,
+                    text: title
+                },
                 scales: {
                     xAxes: [{
                         type: 'linear',

@@ -159,6 +159,14 @@ public class CaseResult {
     }
 
     /**
+     * Return the time id of this report.
+     * @return
+     */
+    public final long getId() {
+        return time;
+    }
+
+    /**
      *
      * @return
      */
