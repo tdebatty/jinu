@@ -162,8 +162,10 @@ public class CaseResult {
      * Return the time id of this report.
      * @return
      */
-    public final long getId() {
-        return time;
+    public final String getId() {
+        Date date = new Date(time);
+        SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmss");
+        return formater.format(date);
     }
 
     /**
