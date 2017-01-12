@@ -49,7 +49,10 @@ public class DummyTest implements TestInterface {
             Logger.getLogger(DummyTest.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
-        return new double[]{155.0 + param * rand.nextGaussian()};
+        return new double[]{
+            155.0 + param * rand.nextGaussian(),
+            155.0
+        };
     }
 
 }

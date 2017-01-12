@@ -41,6 +41,9 @@ public class DummyTest2 implements TestInterface {
     public final double[] run(final double param) {
         /// do some stuff
         Random rand = new Random();
-        return new double[]{155.0 + param * rand.nextGaussian()};
+        return new double[]{
+            155.0 + param * rand.nextGaussian(),
+            1.0
+        };
     }
 }

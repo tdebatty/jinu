@@ -1,3 +1,4 @@
+{% set vcount = report.getValuesCount() - 1%}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -28,7 +29,7 @@
             <ul>
                 {% for test in report.getTests() %}
                     <li>{{ test }}</li>
-                    {% endfor %}
+                {% endfor %}
             </ul>
 
             <p>Classpath:</p>
@@ -44,11 +45,17 @@
             <p>Memory (MB): {{ report.getMemory() / (1024 * 1024) }}</p>
 
             <h2>Results</h2>
+            {% for valueid in 0..vcount %}
+                <canvas id="chart_{{ valueid }}" width="640" height="480"></canvas>
+            {% endfor %}
+
             <table class='table table-condensed'>
                 <tr>
                     <th>Test</th>
                     <th>Parameter value</th>
-                    <th>r0</th>
+                    {% for valueid in 0..vcount %}
+                        <td>r{{ valueid }}</td>
+                    {% endfor %}
                     <th>time (ms)</th>
                     <th></th>
                 </tr>
@@ -56,7 +63,9 @@
                     <tr>
                         <td>{{ result.getTest().getClass().getName() }}</td>
                         <td>{{ result.getParamValue() }}</td>
-                        <td>{{ result.getValue(0) }}</td>
+                        {% for valueid in 0..vcount %}
+                            <td>{{ result.getValue(valueid) }}</td>
+                        {% endfor %}
                         <td>{{ result.runtime }}</td>
                         <td></td>
                     </tr>
@@ -69,7 +78,9 @@
                     <th>Test</th>
                     <th>Parameter value</th>
                     <th></th>
-                    <th>r0</th>
+                    {% for valueid in 0..vcount %}
+                        <td>r{{ valueid }}</td>
+                    {% endfor %}
                     <th>time (ms)</th>
                 </tr>
 
@@ -78,21 +89,29 @@
                         <td>{{ interval.test.getClass().getName() }}</td>
                         <td>{{ interval.getParamValue() }}</td>
                         <td>mean</td>
-                        <td>{{ interval.values[0].getMean() }}</td>
+                        {% for valueid in 0..vcount %}
+                            <td>{{ interval.values[valueid].getMean() }}</td>
+                        {% endfor %}
                         <td>{{ interval.runtime.getMean() }}</td>
                     </tr>
+
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
                         <td>{{ interval.getParamValue() }}</td>
                         <td>std dev</td>
-                        <td>{{ interval.values[0].getStandardDeviation() }}</td>
+                        {% for valueid in 0..vcount %}
+                            <td>{{ interval.values[valueid].getStandardDeviation() }}</td>
+                        {% endfor %}
                         <td>{{ interval.runtime.getStandardDeviation() }}</td>
                     </tr>
+
                     <tr>
                         <td>{{ interval.test.getClass().getName() }}</td>
                         <td>{{ interval.getParamValue() }}</td>
                         <td>low</td>
-                        <td>{{ interval.values[0].getMinInterval() }}</td>
+                        {% for valueid in 0..vcount %}
+                            <td>{{ interval.values[valueid].getMinInterval() }}</td>
+                        {% endfor %}
                         <td>{{ interval.runtime.getMinInterval() }}</td>
                     </tr>
 
@@ -100,7 +119,9 @@
                         <td>{{ interval.test.getClass().getName() }}</td>
                         <td>{{ interval.getParamValue() }}</td>
                         <td>high</td>
-                        <td>{{ interval.values[0].getMaxInterval() }}</td>
+                        {% for valueid in 0..vcount %}
+                            <td>{{ interval.values[valueid].getMaxInterval() }}</td>
+                        {% endfor %}
                         <td>{{ interval.runtime.getMaxInterval() }}</td>
                     </tr>
                 {% endfor %}
@@ -115,25 +136,26 @@
             {% for param_value in report.getParamValues() %}
                 <h3>Parameter value = {{ param_value }}</h3>
 
-                <h4>r0</h4>
-
-                <table class='table table-condensed table-bordered'>
-                    <tr>
-                        <th></th>
-                        {% for test in report.getTests() %}
-                            <th>{{ test.getClass().getName() }}</th>
-                        {% endfor %}
-                    </tr>
-
-                    {% for test in report.getTests() %}
+                {% for valueid in 0..vcount %}
+                    <h4>r{{ valueid }}</h4>
+                    <table class='table table-condensed table-bordered'>
                         <tr>
-                            <th>{{ test.getClass().getName() }}</th>
-                            {% for other_test in report.getTests() %}
-                                <td>{{ report.getSimilarity(test, other_test, 0, param_value) }}</td>
+                            <th></th>
+                            {% for test in report.getTests() %}
+                                <th>{{ test.getClass().getName() }}</th>
                             {% endfor %}
                         </tr>
-                    {% endfor %}
-                </table>
+
+                        {% for test in report.getTests() %}
+                            <tr>
+                                <th>{{ test.getClass().getName() }}</th>
+                                {% for other_test in report.getTests() %}
+                                    <td>{{ report.getSimilarity(test, other_test, valueid, param_value) }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endfor %}
             {% endfor %}
 
             <h2>Sources</h2>
@@ -143,22 +165,23 @@
 {{ report.getSource(test) }}
                 </pre>
             {% endfor %}
-
-            <canvas id="myChart" width="640" height="480"></canvas>
         </div>
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script>
-        var datasets = {{ report.getJsonDatasets() | raw }};
-        var title = {{ report.getId() }};
-        var ctx = $("#myChart");
+        // Common stuff
+        var datasets, title;
         var dynamicColor = function() {
             var r = Math.floor(Math.random() * 255);
             var g = Math.floor(Math.random() * 255);
             var b = Math.floor(Math.random() * 255);
             return "rgb(" + r + "," + g + "," + b + ")";
         };
+
+        {% for valueid in 0..vcount %}
+        datasets = {{ report.getJsonDatasets(valueid) | raw }};
+        title = "{{ report.getId() }} - r{{ valueid }}";
 
         $.each(datasets, function(index, dataset) {
             var color = dynamicColor();
@@ -169,8 +192,7 @@
 
         });
 
-        //pointBackgroundColor
-        var chart = new Chart(ctx, {
+        new Chart($("#chart_{{ valueid }}"), {
             type: 'line',
             data: {
                 datasets: datasets
@@ -188,5 +210,6 @@
                 }
             }
         });
+        {% endfor %}
     </script>
 </html>

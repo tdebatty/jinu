@@ -314,7 +314,7 @@ public class CaseResult {
      * Get the JSON representation of the results, to use with GraphJS.
      * @return
      */
-    public final String getJsonDatasets() {
+    public final String getJsonDatasets(final long vid) {
 
         HashMap<TestInterface, Dataset> datasets =
                 new HashMap<TestInterface, Dataset>();
@@ -328,7 +328,7 @@ public class CaseResult {
             }
             dataset.add(new XY(
                     interval.getParamValue(),
-                    interval.getValues()[0].getMean()));
+                    interval.getValues()[(int) vid].getMean()));
         }
 
         Gson gson = new Gson();
@@ -342,8 +342,8 @@ public class CaseResult {
  * @author Thibault Debatty
  */
 class Dataset {
-    private String label;
-    private TreeSet<XY> data = new TreeSet<XY>(new Comparator<XY>() {
+    private final String label;
+    private final TreeSet<XY> data = new TreeSet<XY>(new Comparator<XY>() {
 
         public int compare(final XY o1, final XY o2) {
             return o1.getX() >= o2.getX() ? 1 : -1;
@@ -365,8 +365,8 @@ class Dataset {
  * @author Thibault Debatty
  */
 class XY {
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
     XY(final double x, final double y) {
         this.x = x;
