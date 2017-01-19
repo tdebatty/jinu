@@ -100,6 +100,12 @@ public class Case implements Serializable {
      */
     public final void run() throws FileNotFoundException, Exception {
 
+        Date date = new Date();
+        SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmss");
+        String filename = formater.format(date) + ".html";
+
+        CaseResult report = createReport();
+
         HashMap<TestAndValue, LinkedList<TestResult>> results =
                 new HashMap<TestAndValue, LinkedList<TestResult>>();
 
@@ -134,11 +140,7 @@ public class Case implements Serializable {
             }
         }
 
-        Date date = new Date();
-        SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmss");
-        String filename = formater.format(date) + ".html";
 
-        CaseResult report = createReport();
         report.setResults(results);
 
         PebbleEngine engine = new PebbleEngine.Builder().build();
