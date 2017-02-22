@@ -49,6 +49,8 @@
                 <canvas id="chart_{{ valueid }}" width="640" height="480"></canvas>
             {% endfor %}
 
+            <canvas id="chart_time" width="640" height="480"></canvas>
+
             <table class='table table-condensed'>
                 <tr>
                     <th>Test</th>
@@ -211,5 +213,37 @@
             }
         });
         {% endfor %}
+
+        // Runtime
+        datasets = {{ report.getJsonTimeDataset() | raw }};
+        title = "{{ report.getId() }} - time";
+
+        $.each(datasets, function(index, dataset) {
+            var color = dynamicColor();
+            dataset.pointBackgroundColor = color;
+            dataset.pointBorderColor = color;
+            dataset.borderColor = color;
+            dataset.tension = 0;
+
+        });
+
+        new Chart($("#chart_time"), {
+            type: 'line',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: title
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
     </script>
 </html>

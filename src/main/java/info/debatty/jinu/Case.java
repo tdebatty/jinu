@@ -49,6 +49,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 /**
  *
@@ -102,7 +105,19 @@ public class Case implements Serializable {
 
         Date date = new Date();
         SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmss");
-        String filename = formater.format(date) + ".html";
+        String time_tag = formater.format(date);
+        String filename = time_tag + ".html";
+
+        // Find the git root
+        Repository repo = new FileRepositoryBuilder()
+                .findGitDir()
+                .build();
+
+        System.out.println(repo.getDirectory());
+
+        Git git = new Git(repo);
+        git.commit().setAll(true).setMessage("Test case " + time_tag).call();
+        git.tag().setName("T" + time_tag).call();
 
         CaseResult report = createReport();
 

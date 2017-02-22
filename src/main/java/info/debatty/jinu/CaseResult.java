@@ -333,7 +333,31 @@ public class CaseResult {
 
         Gson gson = new Gson();
         return gson.toJson(datasets.values());
+    }
 
+    /**
+     * Get the JSON representation of time results.
+     * @return
+     */
+    public final String getJsonTimeDataset() {
+
+        HashMap<TestInterface, Dataset> datasets =
+                new HashMap<TestInterface, Dataset>();
+        for (TestInterval interval : getIntervals()) {
+
+            TestInterface test = interval.getTest();
+            Dataset dataset = datasets.get(test);
+            if (dataset == null) {
+                dataset = new Dataset(test.getClass().getSimpleName());
+                datasets.put(test, dataset);
+            }
+            dataset.add(new XY(
+                    interval.getParamValue(),
+                    interval.getRuntime().getMean()));
+        }
+
+        Gson gson = new Gson();
+        return gson.toJson(datasets.values());
     }
 }
 
