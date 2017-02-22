@@ -183,6 +183,7 @@ public class Case implements Serializable {
                 .build();
 
         Git git = new Git(repo);
+        git.add().addFilepattern(".").call();
         git.commit().setAll(true).setMessage("Test case " + time_tag).call();
         git.tag().setName("T" + time_tag).call();
 
