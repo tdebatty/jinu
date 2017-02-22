@@ -108,19 +108,7 @@ public class Case implements Serializable {
         String time_tag = formater.format(date);
         String filename = time_tag + ".html";
 
-        // Find the git root
-        Repository repo = new FileRepositoryBuilder()
-                .findGitDir()
-                .build();
-
-        System.out.println(repo.getDirectory());
-
-        Git git = new Git(repo);
-        git.commit().setAll(true).setMessage("Test case " + time_tag).call();
-        git.tag().setName("T" + time_tag).call();
-
         CaseResult report = createReport();
-
         HashMap<TestAndValue, LinkedList<TestResult>> results =
                 new HashMap<TestAndValue, LinkedList<TestResult>>();
 
@@ -188,6 +176,15 @@ public class Case implements Serializable {
             }
         }
         data_writer.close();
+
+        // Find the git root
+        Repository repo = new FileRepositoryBuilder()
+                .findGitDir()
+                .build();
+
+        Git git = new Git(repo);
+        git.commit().setAll(true).setMessage("Test case " + time_tag).call();
+        git.tag().setName("T" + time_tag).call();
 
     }
 
