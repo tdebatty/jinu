@@ -105,8 +105,15 @@ public class Case implements Serializable {
 
         Date date = new Date();
         SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat day_formater = new SimpleDateFormat("yyyyMMdd");
         String time_tag = formater.format(date);
-        String filename = time_tag + ".html";
+        String day_tag = day_formater.format(date);
+        String filename = day_tag + File.separator + time_tag + ".html";
+
+        File directory = new File(day_tag);
+        if (! directory.exists()) {
+            directory.mkdir();
+        }
 
         CaseResult report = createReport();
         HashMap<TestAndValue, LinkedList<TestResult>> results =
