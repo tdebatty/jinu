@@ -111,7 +111,7 @@ public class Case implements Serializable {
         String filename = day_tag + File.separator + time_tag + ".html";
 
         File directory = new File(day_tag);
-        if (! directory.exists()) {
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
