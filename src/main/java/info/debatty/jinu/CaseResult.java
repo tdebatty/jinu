@@ -54,7 +54,7 @@ public class CaseResult {
     private Case testcase;
     private final String[] classpath;
 
-    private HashMap<TestAndValue, LinkedList<TestResult>> results;
+    private HashMap<TestAndValue, List<TestResult>> results;
     private final HashMap<TestInterface, String> sources;
 
     /**
@@ -143,7 +143,7 @@ public class CaseResult {
      * @param results
      */
     public final void setResults(
-            final HashMap<TestAndValue, LinkedList<TestResult>> results) {
+            final HashMap<TestAndValue, List<TestResult>> results) {
         this.results = results;
     }
 

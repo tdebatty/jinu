@@ -47,6 +47,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jgit.api.Git;
@@ -116,8 +119,10 @@ public class Case implements Serializable {
         }
 
         CaseResult report = createReport();
-        HashMap<TestAndValue, LinkedList<TestResult>> results =
-                new HashMap<TestAndValue, LinkedList<TestResult>>();
+        HashMap<TestAndValue, List<TestResult>> results =
+                new HashMap<TestAndValue, List<TestResult>>();
+
+        ExecutorService threadpool = Executors.newFixedThreadPool(4);
 
         ProgressBar progress = new ProgressBar(iterations);
         progress.start();
@@ -128,25 +133,26 @@ public class Case implements Serializable {
                 param_values = new double[]{0};
             }
 
+            ArrayList<Future> tasks = new ArrayList<Future>();
+
             for (TestInterface test : tests) {
 
                 for (double param_value : param_values) {
                     TestAndValue key = new TestAndValue(test, param_value);
-                    LinkedList<TestResult> resultset = results.get(key);
+                    List<TestResult> resultset = results.get(key);
                     if (resultset == null) {
-                        resultset = new LinkedList<TestResult>();
+                        resultset = Collections.synchronizedList(
+                                new LinkedList<TestResult>());
                         results.put(key, resultset);
                     }
 
-                    long start_time = System.currentTimeMillis();
-                    double[] values = test.run(param_value);
-                    long runtime = System.currentTimeMillis() - start_time;
-                    resultset.add(
-                            new TestResult(values, runtime, test, param_value));
-
-                    System.gc();
-                    System.runFinalization();
+                    tasks.add(threadpool.submit(
+                            new RunnableTest(test, param_value, resultset)));
                 }
+            }
+
+            for (Future task : tasks) {
+                task.get();
             }
             progress.update(i + 1);
         }
@@ -178,7 +184,7 @@ public class Case implements Serializable {
         // write data
         String data_filename = formater.format(date) + ".dat";
         PrintWriter data_writer = new PrintWriter(data_filename);
-        for (LinkedList<TestResult> resultlist : results.values()) {
+        for (List<TestResult> resultlist : results.values()) {
             for (TestResult result : resultlist) {
                 data_writer.write(result.toCsv() + "\n");
             }
@@ -300,4 +306,41 @@ public class Case implements Serializable {
             }
         }
     }
+}
+
+/**
+ * A wrapper around the task, to be submitted to the executor.
+ * @author tibo
+ */
+class RunnableTest implements Runnable {
+
+    private final TestInterface test;
+    private final double value;
+    private final List<TestResult> resultset;
+
+    RunnableTest(
+            final TestInterface test,
+            final double value,
+            final List<TestResult> resultset) {
+        this.test = test;
+        this.value = value;
+        this.resultset = resultset;
+    }
+
+    public void run() {
+        try {
+            long start_time = System.currentTimeMillis();
+            double[] values = test.run(value);
+            long runtime = System.currentTimeMillis() - start_time;
+            resultset.add(
+                    new TestResult(values, runtime, test, value));
+
+            System.gc();
+            System.runFinalization();
+        } catch (Exception ex) {
+            Logger.getLogger(
+                    RunnableTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }
