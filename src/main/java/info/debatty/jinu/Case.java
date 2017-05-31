@@ -201,7 +201,7 @@ public class Case implements Serializable {
         launchBrowser(filename);
 
         // write data
-        String data_filename = formater.format(date) + ".dat";
+        String data_filename = day_tag + File.separator  + time_tag + ".dat";
         PrintWriter data_writer = new PrintWriter(data_filename);
         for (List<TestResult> resultlist : results.values()) {
             for (TestResult result : resultlist) {
