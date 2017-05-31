@@ -44,7 +44,7 @@ public class DummyTest implements TestInterface {
         /// do some stuff
         Random rand = new Random();
         try {
-            Thread.sleep(1200);
+            Thread.sleep(333);
         } catch (InterruptedException ex) {
             Logger.getLogger(DummyTest.class.getName())
                     .log(Level.SEVERE, null, ex);
