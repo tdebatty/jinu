@@ -68,6 +68,25 @@ public class Case implements Serializable {
     private final LinkedList<TestInterface> tests =
             new LinkedList<TestInterface>();
     private double[] param_values = null;
+    private int parallelism;
+
+    /**
+     * Initialize case with default parallelism.
+     */
+    public Case() {
+        int cores = Runtime.getRuntime().availableProcessors();
+        parallelism = Math.max(1, cores - 2);
+    }
+
+    /**
+     * Set parallelism (default is cores - 2).
+     * Should be set to 1 if your algorithm is already multithreaded, or for
+     * IO intensive tasks.
+     * @param parallelism
+     */
+    public final void setParallelism(final int parallelism) {
+        this.parallelism = parallelism;
+    }
 
     /**
      * Set the values that will be passed to tests.
@@ -122,7 +141,7 @@ public class Case implements Serializable {
         HashMap<TestAndValue, List<TestResult>> results =
                 new HashMap<TestAndValue, List<TestResult>>();
 
-        ExecutorService threadpool = Executors.newFixedThreadPool(4);
+        ExecutorService threadpool = Executors.newFixedThreadPool(parallelism);
 
         ProgressBar progress = new ProgressBar(iterations);
         progress.start();
