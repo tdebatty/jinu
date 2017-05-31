@@ -119,7 +119,7 @@ public class Case implements Serializable {
         HashMap<TestAndValue, LinkedList<TestResult>> results =
                 new HashMap<TestAndValue, LinkedList<TestResult>>();
 
-        ProgressBar progress = new ProgressBar(iterations - 1);
+        ProgressBar progress = new ProgressBar(iterations);
         progress.start();
 
         for (int i = 0; i < iterations; i++) {
