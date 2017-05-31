@@ -51,7 +51,13 @@
 
             <canvas id="chart_time" width="640" height="480"></canvas>
 
-            <table class='table table-condensed'>
+            <p class="hidden-print">
+                <a class="" data-toggle="collapse" href="#results-table">
+                    Show/hide results table
+                </a>
+            </p>
+
+            <table class="table table-condensed collapse in" id="results-table">
                 <tr>
                     <th>Test</th>
                     <th>Parameter value</th>
@@ -74,9 +80,9 @@
                 {% endfor %}
             </table>
 
-            <p>
+            <p class="hidden-print">
                 <a class="" data-toggle="collapse" href="#confidence">
-                    Toggle
+                    Show/hide confidence intervals
                 </a>
             </p>
             <div class="collapse in" id="confidence">
@@ -136,44 +142,59 @@
                 </table>
             </div>
 
-            <h2>Test similarity</h2>
-            <p><a href=\"https://en.wikipedia.org/wiki/Student's_t-test\">Student's
-                    t-test</a>: values above 0.95 indicate both tests produce the
-                same average value.</p>
+            <p class="hidden-print">
+                <a class="" data-toggle="collapse" href="#similarity">
+                    Show/hide similarity
+                </a>
+            </p>
 
-            <!-- For each parameter value -->
-            {% for param_value in report.getParamValues() %}
-                <h3>Parameter value = {{ param_value }}</h3>
+            <div class="collapse in" id="similarity">
+                <h2>Test similarity</h2>
+                <p><a href=\"https://en.wikipedia.org/wiki/Student's_t-test\">Student's
+                        t-test</a>: values above 0.95 indicate both tests produce the
+                    same average value.</p>
 
-                {% for valueid in 0..vcount %}
-                    <h4>r{{ valueid }}</h4>
-                    <table class='table table-condensed table-bordered'>
-                        <tr>
-                            <th></th>
-                            {% for test in report.getTests() %}
-                                <th>{{ test.getClass().getName() }}</th>
-                            {% endfor %}
-                        </tr>
+                <!-- For each parameter value -->
+                {% for param_value in report.getParamValues() %}
+                    <h3>Parameter value = {{ param_value }}</h3>
 
-                        {% for test in report.getTests() %}
+                    {% for valueid in 0..vcount %}
+                        <h4>r{{ valueid }}</h4>
+                        <table class='table table-condensed table-bordered'>
                             <tr>
-                                <th>{{ test.getClass().getName() }}</th>
-                                {% for other_test in report.getTests() %}
-                                    <td>{{ report.getSimilarity(test, other_test, valueid, param_value) }}</td>
+                                <th></th>
+                                {% for test in report.getTests() %}
+                                    <th>{{ test.getClass().getName() }}</th>
                                 {% endfor %}
                             </tr>
-                        {% endfor %}
-                    </table>
-                {% endfor %}
-            {% endfor %}
 
-            <h2>Sources</h2>
-            {% for test in report.getTests() %}
-                <h3>{{ test.getClass().getName() }}</h3>
-                <pre>
+                            {% for test in report.getTests() %}
+                                <tr>
+                                    <th>{{ test.getClass().getName() }}</th>
+                                    {% for other_test in report.getTests() %}
+                                        <td>{{ report.getSimilarity(test, other_test, valueid, param_value) }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <p class="hidden-print">
+                <a class="" data-toggle="collapse" href="#sources">
+                    Show/hide sources
+                </a>
+            </p>
+            <div class="collapse in" id="sources">
+                <h2>Sources</h2>
+                {% for test in report.getTests() %}
+                    <h3>{{ test.getClass().getName() }}</h3>
+                    <pre>
 {{ report.getSource(test) }}
-                </pre>
-            {% endfor %}
+                    </pre>
+                {% endfor %}
+            </div>
         </div>
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
