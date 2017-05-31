@@ -119,10 +119,10 @@ public class Case implements Serializable {
         HashMap<TestAndValue, LinkedList<TestResult>> results =
                 new HashMap<TestAndValue, LinkedList<TestResult>>();
 
-        ProgressBar progress = new ProgressBar(iterations);
+        ProgressBar progress = new ProgressBar(iterations - 1);
+        progress.start();
 
         for (int i = 0; i < iterations; i++) {
-            progress.update(i);
             if (param_values == null) {
                 // No param to give to the tests...
                 param_values = new double[]{0};
@@ -148,6 +148,7 @@ public class Case implements Serializable {
                     System.runFinalization();
                 }
             }
+            progress.update(i + 1);
         }
 
 

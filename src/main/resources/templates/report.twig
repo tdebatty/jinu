@@ -74,60 +74,67 @@
                 {% endfor %}
             </table>
 
-            <h2>Confidence intervals</h2>
-            <table class='table table-condensed'>
-                <tr>
-                    <th>Test</th>
-                    <th>Parameter value</th>
-                    <th></th>
-                    {% for valueid in 0..vcount %}
-                        <td>r{{ valueid }}</td>
+            <p>
+                <a class="" data-toggle="collapse" href="#confidence">
+                    Toggle
+                </a>
+            </p>
+            <div class="collapse in" id="confidence">
+                <h2>Confidence intervals</h2>
+                <table class='table table-condensed'>
+                    <tr>
+                        <th>Test</th>
+                        <th>Parameter value</th>
+                        <th></th>
+                        {% for valueid in 0..vcount %}
+                            <td>r{{ valueid }}</td>
+                        {% endfor %}
+                        <th>time (ms)</th>
+                    </tr>
+
+                    {% for interval in report.getIntervals() %}
+                        <tr>
+                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.getParamValue() }}</td>
+                            <td>mean</td>
+                            {% for valueid in 0..vcount %}
+                                <td>{{ interval.values[valueid].getMean() }}</td>
+                            {% endfor %}
+                            <td>{{ interval.runtime.getMean() }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.getParamValue() }}</td>
+                            <td>std dev</td>
+                            {% for valueid in 0..vcount %}
+                                <td>{{ interval.values[valueid].getStandardDeviation() }}</td>
+                            {% endfor %}
+                            <td>{{ interval.runtime.getStandardDeviation() }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.getParamValue() }}</td>
+                            <td>low</td>
+                            {% for valueid in 0..vcount %}
+                                <td>{{ interval.values[valueid].getMinInterval() }}</td>
+                            {% endfor %}
+                            <td>{{ interval.runtime.getMinInterval() }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.getParamValue() }}</td>
+                            <td>high</td>
+                            {% for valueid in 0..vcount %}
+                                <td>{{ interval.values[valueid].getMaxInterval() }}</td>
+                            {% endfor %}
+                            <td>{{ interval.runtime.getMaxInterval() }}</td>
+                        </tr>
                     {% endfor %}
-                    <th>time (ms)</th>
-                </tr>
-
-                {% for interval in report.getIntervals() %}
-                    <tr>
-                        <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.getParamValue() }}</td>
-                        <td>mean</td>
-                        {% for valueid in 0..vcount %}
-                            <td>{{ interval.values[valueid].getMean() }}</td>
-                        {% endfor %}
-                        <td>{{ interval.runtime.getMean() }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.getParamValue() }}</td>
-                        <td>std dev</td>
-                        {% for valueid in 0..vcount %}
-                            <td>{{ interval.values[valueid].getStandardDeviation() }}</td>
-                        {% endfor %}
-                        <td>{{ interval.runtime.getStandardDeviation() }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.getParamValue() }}</td>
-                        <td>low</td>
-                        {% for valueid in 0..vcount %}
-                            <td>{{ interval.values[valueid].getMinInterval() }}</td>
-                        {% endfor %}
-                        <td>{{ interval.runtime.getMinInterval() }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ interval.test.getClass().getName() }}</td>
-                        <td>{{ interval.getParamValue() }}</td>
-                        <td>high</td>
-                        {% for valueid in 0..vcount %}
-                            <td>{{ interval.values[valueid].getMaxInterval() }}</td>
-                        {% endfor %}
-                        <td>{{ interval.runtime.getMaxInterval() }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+                </table>
+            </div>
 
             <h2>Test similarity</h2>
             <p><a href=\"https://en.wikipedia.org/wiki/Student's_t-test\">Student's

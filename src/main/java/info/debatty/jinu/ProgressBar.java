@@ -33,8 +33,7 @@ public class ProgressBar {
     private static final double HUNDRED = 100.0;
 
     private final int max;
-    private int last_value = 0;
-    private long last_time = 0;
+    private long start_time = 0;
 
 
     /**
@@ -46,22 +45,24 @@ public class ProgressBar {
     }
 
     /**
+     * Start the timer...
+     */
+    public final void start() {
+        this.start_time = System.currentTimeMillis();
+    }
+
+    /**
      * Update the internal counter, and display ETR.
      * @param value
      */
     public final void update(final int value) {
-        long etr = 0;
 
         long time = System.currentTimeMillis();
-        if (last_time != 0) {
-            etr = (max - value) * (time - last_time) / (value - last_value);
-        }
+        long etr = (max - value) * (time - start_time) / value;
 
         int ratio = (int) HUNDRED * value / max;
         System.out.printf(
                 "%3d%% %s remaining\r", ratio, TimeUtils.millisToDHMS(etr));
-        last_value = value;
-        last_time = time;
     }
 
 }
