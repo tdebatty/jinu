@@ -132,6 +132,7 @@ public class Case implements Serializable {
         String day_tag = day_formater.format(date);
         String filename = day_tag + File.separator + time_tag + ".html";
 
+        // Create repository for report if needed
         File directory = new File(day_tag);
         if (!directory.exists()) {
             directory.mkdir();
@@ -143,6 +144,7 @@ public class Case implements Serializable {
 
         ExecutorService threadpool = Executors.newFixedThreadPool(parallelism);
 
+        // Run tests
         ProgressBar progress = new ProgressBar(iterations);
         progress.start();
 
@@ -176,9 +178,10 @@ public class Case implements Serializable {
             progress.update(i + 1);
         }
 
-
+        threadpool.shutdown();
         report.setResults(results);
 
+        // Create html report
         PebbleEngine engine = new PebbleEngine.Builder().build();
         Writer writer = new StringWriter();
         Map<String, Object> context = new HashMap<String, Object>();
@@ -200,7 +203,7 @@ public class Case implements Serializable {
         out.close();
         launchBrowser(filename);
 
-        // write data
+        // write data file
         String data_filename = day_tag + File.separator  + time_tag + ".dat";
         PrintWriter data_writer = new PrintWriter(data_filename);
         for (List<TestResult> resultlist : results.values()) {
@@ -210,16 +213,21 @@ public class Case implements Serializable {
         }
         data_writer.close();
 
-        // Find the git root
-        Repository repo = new FileRepositoryBuilder()
-                .findGitDir()
-                .build();
+        // Commit GIT repository
+        try {
+            Repository repo = new FileRepositoryBuilder()
+                    .findGitDir()
+                    .build();
 
-        Git git = new Git(repo);
-        git.add().addFilepattern(".").call();
-        git.commit().setAll(true).setMessage("Test case " + time_tag).call();
-        git.tag().setName("T" + time_tag).call();
-
+            Git git = new Git(repo);
+            git.add().addFilepattern(".").call();
+            git.commit().setAll(true).setMessage("Test case " + time_tag)
+                    .call();
+            git.tag().setName("T" + time_tag).call();
+        } catch (Exception ex) {
+            System.err.println("Could not commit GIT repo");
+            System.err.println(ex.getMessage());
+        }
     }
 
     private CaseResult createReport() {
