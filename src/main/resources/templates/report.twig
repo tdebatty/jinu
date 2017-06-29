@@ -20,23 +20,13 @@
         <div class='container'>
             <h1>{{ report.title }}</h1>
             <p>{{ report.time() }}</p>
-
-            <h2>Case details</h2>
-            <p>Test case: {{ report.getCaseName() }}</p>
-            <p>Version: {{ report.getCaseVersion() }}</p>
+            <p>{{ report.getCaseDescription() }}</p>
             <p>Iterations: {{ report.testcase.iterations }}</p>
             <p>Tests:</p>
             <ul>
                 {% for test in report.getTests() %}
-                    <li>{{ test }}</li>
+                    <li>{{ test.getClassName() }}</li>
                 {% endfor %}
-            </ul>
-
-            <p>Classpath:</p>
-            <ul>
-                {% for classpath in report.classpath %}
-                    <li>{{ classpath }}</li>
-                    {% endfor %}
             </ul>
 
             <h2>System</h2>
@@ -195,7 +185,14 @@
                     </pre>
                 {% endfor %}
             </div>
-        </div>
+
+            <p>Classpath:</p>
+            <ul>
+                {% for classpath in report.classpath %}
+                    <li>{{ classpath }}</li>
+                    {% endfor %}
+            </ul>
+        </div><!-- container -->
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

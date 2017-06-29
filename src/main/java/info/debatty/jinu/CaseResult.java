@@ -180,6 +180,14 @@ public class CaseResult {
      *
      * @return
      */
+    public final String getCaseDescription() {
+        return testcase.getDescription();
+    }
+
+    /**
+     *
+     * @return
+     */
     public final long getCaseVersion() {
         return ObjectStreamClass
                 .lookup(testcase.getClass())
@@ -230,8 +238,6 @@ public class CaseResult {
     public final String[] getClasspath() {
         return classpath;
     }
-
-
 
     /**
      *
@@ -312,6 +318,7 @@ public class CaseResult {
 
     /**
      * Get the JSON representation of the results, to use with GraphJS.
+     * @param vid
      * @return
      */
     public final String getJsonDatasets(final long vid) {

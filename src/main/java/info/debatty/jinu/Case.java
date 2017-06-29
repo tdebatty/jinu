@@ -64,11 +64,17 @@ public class Case implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(Case.class.getName());
 
+    private String description = "";
+    private String base_dir = "";
+    private boolean commit_to_git = true;
     private int iterations;
     private final LinkedList<TestInterface> tests =
             new LinkedList<TestInterface>();
     private double[] param_values = null;
     private int parallelism;
+
+    private final LinkedList<Listener> listeners
+            = new LinkedList<Listener>();
 
     /**
      * Initialize case with default parallelism.
@@ -76,6 +82,30 @@ public class Case implements Serializable {
     public Case() {
         int cores = Runtime.getRuntime().availableProcessors();
         parallelism = Math.max(1, cores - 2);
+    }
+
+    /**
+     * Try to commit sources to GIT repository, or not.
+     * @param commit_to_git
+     */
+    public final void commitToGit(final boolean commit_to_git) {
+        this.commit_to_git = commit_to_git;
+    }
+
+    /**
+     * Set the base directory, where all test results will be written.
+     * @param base_dir
+     */
+    public final void setBaseDir(final String base_dir) {
+        this.base_dir = base_dir;
+    }
+
+    /**
+     * Set the description of the test (will be added to HTML report).
+     * @param description
+     */
+    public final void setDescription(final String description) {
+        this.description = description;
     }
 
     /**
@@ -105,6 +135,14 @@ public class Case implements Serializable {
     }
 
     /**
+     * Add a listener, that will be notified at the end of each iteration.
+     * @param listener
+     */
+    public final void addListener(final Listener listener) {
+        listeners.add(listener);
+    }
+
+    /**
      * Add a test to the case.
      * @param testclass
      */
@@ -130,10 +168,11 @@ public class Case implements Serializable {
         SimpleDateFormat day_formater = new SimpleDateFormat("yyyyMMdd");
         String time_tag = formater.format(date);
         String day_tag = day_formater.format(date);
-        String filename = day_tag + File.separator + time_tag + ".html";
+        String filename = base_dir + day_tag + File.separator + time_tag
+                + ".html";
 
         // Create repository for report if needed
-        File directory = new File(day_tag);
+        File directory = new File(base_dir + day_tag);
         if (!directory.exists()) {
             directory.mkdir();
         }
@@ -176,9 +215,12 @@ public class Case implements Serializable {
                 task.get();
             }
             progress.update(i + 1);
+
+            for (Listener listener : listeners) {
+                listener.notify(i);
+            }
         }
 
-        threadpool.shutdown();
         report.setResults(results);
 
         // Create html report
@@ -204,7 +246,8 @@ public class Case implements Serializable {
         launchBrowser(filename);
 
         // write data file
-        String data_filename = day_tag + File.separator  + time_tag + ".dat";
+        String data_filename = base_dir + day_tag + File.separator  + time_tag
+                + ".dat";
         PrintWriter data_writer = new PrintWriter(data_filename);
         for (List<TestResult> resultlist : results.values()) {
             for (TestResult result : resultlist) {
@@ -213,21 +256,11 @@ public class Case implements Serializable {
         }
         data_writer.close();
 
-        // Commit GIT repository
-        try {
-            Repository repo = new FileRepositoryBuilder()
-                    .findGitDir()
-                    .build();
-
-            Git git = new Git(repo);
-            git.add().addFilepattern(".").call();
-            git.commit().setAll(true).setMessage("Test case " + time_tag)
-                    .call();
-            git.tag().setName("T" + time_tag).call();
-        } catch (Exception ex) {
-            System.err.println("Could not commit GIT repo");
-            System.err.println(ex.getMessage());
+        if (commit_to_git) {
+            commitToGit(time_tag);
         }
+
+        threadpool.shutdownNow();
     }
 
     private CaseResult createReport() {
@@ -311,8 +344,6 @@ public class Case implements Serializable {
         return iterations;
     }
 
-
-
     private void launchBrowser(final String filename) {
         if (Desktop.isDesktopSupported()) {
             File file = new File(filename);
@@ -332,6 +363,31 @@ public class Case implements Serializable {
                 LOGGER.log(Level.INFO, "Cannot launch brower", e);
             }
         }
+    }
+
+    private void commitToGit(final String time_tag) {
+                try {
+            Repository repo = new FileRepositoryBuilder()
+                    .findGitDir()
+                    .build();
+
+            Git git = new Git(repo);
+            git.add().addFilepattern(".").call();
+            git.commit().setAll(true).setMessage("Test case " + time_tag)
+                    .call();
+            git.tag().setName("T" + time_tag).call();
+        } catch (Exception ex) {
+            System.err.println("Could not commit GIT repo");
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public final String getDescription() {
+        return description;
     }
 }
 
