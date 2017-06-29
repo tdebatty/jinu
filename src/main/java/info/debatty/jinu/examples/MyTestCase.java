@@ -40,6 +40,7 @@ public class MyTestCase extends Case {
     public static void main(final String[] args) throws Exception {
 
         Case test = new MyTestCase();
+        test.setDescription("My test, with args: " + args.length);
         test.run();
     }
 
