@@ -25,7 +25,7 @@
             <p>Tests:</p>
             <ul>
                 {% for test in report.getTests() %}
-                    <li>{{ test.getClassName() }}</li>
+                    <li>{{ test.getClass().getName() }}</li>
                 {% endfor %}
             </ul>
 
@@ -186,7 +186,7 @@
                 {% endfor %}
             </div>
 
-            <p>Classpath:</p>
+            <h2>Classpath</h2>
             <ul>
                 {% for classpath in report.classpath %}
                     <li>{{ classpath }}</li>
