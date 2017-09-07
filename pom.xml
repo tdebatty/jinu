@@ -3,7 +3,7 @@
 
     <groupId>info.debatty</groupId>
     <artifactId>jinu</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8</version>
     <packaging>jar</packaging>
 
     <name>jinu</name>
@@ -34,7 +34,7 @@
         <connection>scm:git:git@github.com:tdebatty/jinu.git</connection>
         <developerConnection>scm:git:git@github.com:tdebatty/jinu.git</developerConnection>
         <url>git@github.com:tdebatty/jinu.git</url>
-        <tag>v0.1</tag>
+        <tag>v0.8</tag>
     </scm>
 
     <distributionManagement>
