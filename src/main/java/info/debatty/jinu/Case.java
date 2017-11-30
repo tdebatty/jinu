@@ -245,10 +245,15 @@ public class Case implements Serializable {
         out.close();
         launchBrowser(filename);
 
-        // write data file
+        // write csv file
         String data_filename = base_dir + day_tag + File.separator  + time_tag
-                + ".dat";
+                + ".csv";
         PrintWriter data_writer = new PrintWriter(data_filename);
+
+        data_writer.write("## case " + time_tag);
+        data_writer.write("## " + this.getDescription());
+        data_writer.write(
+                results.values().iterator().next().get(0).getHeader());
         for (List<TestResult> resultlist : results.values()) {
             for (TestResult result : resultlist) {
                 data_writer.write(result.toCsv() + "\n");

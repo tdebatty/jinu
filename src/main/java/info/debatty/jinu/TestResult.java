@@ -110,6 +110,22 @@ public final class TestResult {
                 + arrToCsv(values);
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getHeader() {
+        String r = "## test" + SEPARATOR
+                + "input value" + SEPARATOR
+                + "runtime" + SEPARATOR;
+
+        for (int i = 0; i < values.length; i++) {
+            r += "value" + i + SEPARATOR;
+        }
+
+        return r;
+    }
+
     private static String arrToCsv(final double[] arr) {
         String r = "";
         for (int i = 0; i < arr.length; i++) {
