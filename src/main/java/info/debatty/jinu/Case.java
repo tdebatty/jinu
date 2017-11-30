@@ -250,8 +250,8 @@ public class Case implements Serializable {
                 + ".csv";
         PrintWriter data_writer = new PrintWriter(data_filename);
 
-        data_writer.write("## case " + time_tag);
-        data_writer.write("## " + this.getDescription());
+        data_writer.write("## case " + time_tag + "\n");
+        data_writer.write("## " + this.getDescription() + "\n");
         data_writer.write(
                 results.values().iterator().next().get(0).getHeader());
         for (List<TestResult> resultlist : results.values()) {

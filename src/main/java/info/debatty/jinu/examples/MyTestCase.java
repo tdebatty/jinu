@@ -49,6 +49,7 @@ public class MyTestCase extends Case {
      */
     public MyTestCase() {
         super();
+        super.commitToGit(false);
         setIterations(10);
         setParamValues(new double[]{2.0, 3.0, 4.0});
         addTest(DummyTest.class);

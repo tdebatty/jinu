@@ -123,6 +123,8 @@ public final class TestResult {
             r += "value" + i + SEPARATOR;
         }
 
+        r += "\n";
+
         return r;
     }
 
