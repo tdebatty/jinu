@@ -357,7 +357,7 @@ public class Case implements Serializable {
                 desktop.browse(file.toURI());
 
             } catch (IOException e) {
-                LOGGER.log(Level.INFO, "Cannot launch brower", e);
+                LOGGER.log(Level.INFO, "Cannot launch brower");
             }
         } else {
             Runtime runtime = Runtime.getRuntime();
@@ -365,7 +365,7 @@ public class Case implements Serializable {
                 runtime.exec("xdg-open " + filename);
 
             } catch (IOException e) {
-                LOGGER.log(Level.INFO, "Cannot launch brower", e);
+                LOGGER.log(Level.INFO, "Cannot launch brower");
             }
         }
     }
