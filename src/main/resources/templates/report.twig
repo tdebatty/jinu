@@ -70,6 +70,15 @@
                 {% endfor %}
             </table>
 
+            {% if report.getTestcase().getIterations() < 2 %}
+
+            <div class="alert alert-warning">
+                <strong>Warning!</strong> Needs at least 2 iterations to compute
+                <strong>confidence intervals</strong> and <strong>similarity
+                between tests</strong>.
+            </div>
+
+            {% else %}
             <p class="hidden-print">
                 <a class="" data-toggle="collapse" href="#confidence">
                     Show/hide confidence intervals
@@ -132,6 +141,8 @@
                 </table>
             </div>
 
+
+
             <p class="hidden-print">
                 <a class="" data-toggle="collapse" href="#similarity">
                     Show/hide similarity
@@ -170,6 +181,8 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+
+            {% endif %}
 
             <p class="hidden-print">
                 <a class="" data-toggle="collapse" href="#sources">
