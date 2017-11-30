@@ -296,8 +296,7 @@ public class Case implements Serializable {
             } catch (IOException ex) {
                 LOGGER.log(
                         Level.INFO,
-                        "Cannot read source of " + clazz.getName(),
-                        ex);
+                        "Cannot read source of {0}", clazz.getName());
             }
         }
 
