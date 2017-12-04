@@ -56,6 +56,7 @@ public class CaseResult {
 
     private HashMap<TestAndValue, List<TestResult>> results;
     private final HashMap<TestInterface, String> sources;
+    private long runtime;
 
     /**
      * Initialize the case result.
@@ -365,6 +366,22 @@ public class CaseResult {
 
         Gson gson = new Gson();
         return gson.toJson(datasets.values());
+    }
+
+    /**
+     *
+     * @param runtime
+     */
+    final void setRuntime(final long runtime) {
+        this.runtime = runtime;
+    }
+
+    /**
+     * Get the (wall clock) total runtime of this case (in ms).
+     * @return
+     */
+    public final long getRuntime() {
+        return runtime;
     }
 }
 

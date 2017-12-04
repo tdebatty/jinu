@@ -177,7 +177,7 @@ public class Case implements Serializable {
             directory.mkdir();
         }
 
-        CaseResult report = createReport();
+        CaseResult case_result = createReport();
         HashMap<TestAndValue, List<TestResult>> results =
                 new HashMap<TestAndValue, List<TestResult>>();
 
@@ -186,6 +186,8 @@ public class Case implements Serializable {
         // Run tests
         ProgressBar progress = new ProgressBar(iterations);
         progress.start();
+
+        long start_time = System.currentTimeMillis();
 
         for (int i = 0; i < iterations; i++) {
             if (param_values == null) {
@@ -221,13 +223,16 @@ public class Case implements Serializable {
             }
         }
 
-        report.setResults(results);
+        threadpool.shutdownNow();
+
+        case_result.setResults(results);
+        case_result.setRuntime(System.currentTimeMillis() - start_time);
 
         // Create html report
         PebbleEngine engine = new PebbleEngine.Builder().build();
         Writer writer = new StringWriter();
         Map<String, Object> context = new HashMap<String, Object>();
-        context.put("report", report);
+        context.put("report", case_result);
 
         try {
             PebbleTemplate template =
@@ -264,8 +269,6 @@ public class Case implements Serializable {
         if (commit_to_git) {
             commitToGit(time_tag);
         }
-
-        threadpool.shutdownNow();
     }
 
     private CaseResult createReport() {

@@ -22,6 +22,7 @@
             <p>{{ report.time() }}</p>
             <p>{{ report.getCaseDescription() }}</p>
             <p>Iterations: {{ report.testcase.iterations }}</p>
+            <p>Total runtime: {{ report.getRuntime()/1000 }} seconds</p>
             <p>Tests:</p>
             <ul>
                 {% for test in report.getTests() %}
