@@ -177,6 +177,11 @@ public class Case implements Serializable {
             directory.mkdir();
         }
 
+        if (param_values == null) {
+            // No param to give to the tests...
+            param_values = new double[]{0};
+        }
+
         CaseResult case_result = createReport();
         HashMap<TestAndValue, List<TestResult>> results =
                 new HashMap<TestAndValue, List<TestResult>>();
@@ -190,11 +195,7 @@ public class Case implements Serializable {
         long start_time = System.currentTimeMillis();
 
         for (int i = 0; i < iterations; i++) {
-            if (param_values == null) {
-                // No param to give to the tests...
-                param_values = new double[]{0};
-            }
-
+            LOGGER.info("Start iteration {}", i);
             ArrayList<Future> tasks = new ArrayList<Future>();
 
             for (TestInterface test : tests) {
