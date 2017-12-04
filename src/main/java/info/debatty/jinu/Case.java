@@ -50,11 +50,11 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -62,7 +62,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
  */
 public class Case implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger(Case.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Case.class);
 
     private String description = "";
     private String base_dir = "";
@@ -150,9 +150,9 @@ public class Case implements Serializable {
         try {
             tests.add(testclass.newInstance());
         } catch (InstantiationException ex) {
-            Logger.getLogger(Case.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warn(ex.getMessage());
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(Case.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warn(ex.getMessage());
         }
     }
 
@@ -240,9 +240,9 @@ public class Case implements Serializable {
             template.evaluate(writer, context);
 
         } catch (PebbleException ex) {
-            LOGGER.log(Level.WARNING, "Cannot produce html report!", ex);
+            LOGGER.warn("Cannot produce html report!", ex);
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, "Cannot produce html report!", ex);
+            LOGGER.warn("Cannot produce html report!", ex);
         }
 
         PrintWriter out = new PrintWriter(filename);
@@ -297,8 +297,7 @@ public class Case implements Serializable {
 
                 report.addSource(test, builder.toString());
             } catch (IOException ex) {
-                LOGGER.log(
-                        Level.INFO,
+                LOGGER.info(
                         "Cannot read source of {0}", clazz.getName());
             }
         }
@@ -359,7 +358,7 @@ public class Case implements Serializable {
                 desktop.browse(file.toURI());
 
             } catch (IOException e) {
-                LOGGER.log(Level.INFO, "Cannot launch brower");
+                LOGGER.info("Cannot launch brower");
             }
         } else {
             Runtime runtime = Runtime.getRuntime();
@@ -367,7 +366,7 @@ public class Case implements Serializable {
                 runtime.exec("xdg-open " + filename);
 
             } catch (IOException e) {
-                LOGGER.log(Level.INFO, "Cannot launch brower");
+                LOGGER.info("Cannot launch brower");
             }
         }
     }
@@ -428,8 +427,7 @@ class RunnableTest implements Runnable {
             System.gc();
             System.runFinalization();
         } catch (Exception ex) {
-            Logger.getLogger(
-                    RunnableTest.class.getName()).log(Level.SEVERE, null, ex);
+            LoggerFactory.getLogger(RunnableTest.class).warn(ex.getMessage());
         }
     }
 
