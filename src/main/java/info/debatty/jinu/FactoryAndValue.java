@@ -28,13 +28,13 @@ package info.debatty.jinu;
  * Captures a test instance, and the value that was fed to the test.
  * @author Thibault Debatty
  */
-public class TestAndValue {
+public class FactoryAndValue {
 
-    private final TestInterface test;
+    private final TestFactory factory;
     private final double value;
 
-    TestAndValue(final TestInterface test, final double param_value) {
-        this.test = test;
+    FactoryAndValue(final TestFactory factory, final double param_value) {
+        this.factory = factory;
         this.value = param_value;
     }
 
@@ -42,8 +42,8 @@ public class TestAndValue {
      *
      * @return
      */
-    public final TestInterface getTest() {
-        return test;
+    public final TestFactory getTest() {
+        return factory;
     }
 
     /**
@@ -57,7 +57,7 @@ public class TestAndValue {
     @Override
     public final int hashCode() {
         int hash = 5;
-        hash = 19 * hash + this.test.hashCode();
+        hash = 19 * hash + this.factory.hashCode();
         hash = 19 * hash
                 + (int) (Double.doubleToLongBits(this.value)
                 ^ (Double.doubleToLongBits(this.value) >>> 32));
@@ -75,7 +75,7 @@ public class TestAndValue {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TestAndValue other = (TestAndValue) obj;
+        final FactoryAndValue other = (FactoryAndValue) obj;
 
         if (
                 Double.doubleToLongBits(this.value)
@@ -83,12 +83,9 @@ public class TestAndValue {
             return false;
         }
 
-        if (
-                this.test != other.test
-                && (this.test == null || !this.test.equals(other.test))) {
-            return false;
-        }
-        return true;
+        return !(this.factory != other.factory
+                && (this.factory == null
+                || !this.factory.equals(other.factory)));
     }
 
 

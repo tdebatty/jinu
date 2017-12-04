@@ -68,8 +68,8 @@ public class Case implements Serializable {
     private String base_dir = "";
     private boolean commit_to_git = true;
     private int iterations;
-    private final LinkedList<TestInterface> tests =
-            new LinkedList<TestInterface>();
+    private final LinkedList<TestFactory> tests =
+            new LinkedList<TestFactory>();
     private double[] param_values = null;
     private int parallelism;
 
@@ -144,16 +144,10 @@ public class Case implements Serializable {
 
     /**
      * Add a test to the case.
-     * @param testclass
+     * @param factory
      */
-    public final void addTest(final  Class<? extends TestInterface> testclass) {
-        try {
-            tests.add(testclass.newInstance());
-        } catch (InstantiationException ex) {
-            LOGGER.warn(ex.getMessage());
-        } catch (IllegalAccessException ex) {
-            LOGGER.warn(ex.getMessage());
-        }
+    public final void addTest(final TestFactory factory) {
+        tests.add(factory);
     }
 
     /**
@@ -183,8 +177,8 @@ public class Case implements Serializable {
         }
 
         CaseResult case_result = createReport();
-        HashMap<TestAndValue, List<TestResult>> results =
-                new HashMap<TestAndValue, List<TestResult>>();
+        HashMap<FactoryAndValue, List<TestResult>> results =
+                new HashMap<FactoryAndValue, List<TestResult>>();
 
         ExecutorService threadpool = Executors.newFixedThreadPool(parallelism);
 
@@ -198,10 +192,10 @@ public class Case implements Serializable {
             LOGGER.info("Start iteration {}", i);
             ArrayList<Future> tasks = new ArrayList<Future>();
 
-            for (TestInterface test : tests) {
-
+            for (TestFactory factory : tests) {
+                TestInterface test = factory.newInstance();
                 for (double param_value : param_values) {
-                    TestAndValue key = new TestAndValue(test, param_value);
+                    FactoryAndValue key = new FactoryAndValue(factory, param_value);
                     List<TestResult> resultset = results.get(key);
                     if (resultset == null) {
                         resultset = Collections.synchronizedList(
@@ -279,8 +273,9 @@ public class Case implements Serializable {
         report.setTestcase(this);
 
         // Try to read the source code of the tests
-        for (TestInterface test : tests) {
+        for (TestFactory factory : tests) {
 
+            TestInterface test = factory.newInstance();
             Class clazz = test.getClass();
             String path = "src/main/java/"
                     + clazz.getPackage().getName().replaceAll("\\.", "/");
@@ -296,7 +291,7 @@ public class Case implements Serializable {
                     builder.append("\n");
                 }
 
-                report.addSource(test, builder.toString());
+                report.addSource(factory, builder.toString());
             } catch (IOException ex) {
                 LOGGER.info(
                         "Cannot read source of {0}", clazz.getName());
@@ -339,7 +334,7 @@ public class Case implements Serializable {
      *
      * @return
      */
-    public final LinkedList<TestInterface> getTests() {
+    public final LinkedList<TestFactory> getTests() {
         return tests;
     }
 

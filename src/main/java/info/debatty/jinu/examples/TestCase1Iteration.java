@@ -25,6 +25,8 @@
 package info.debatty.jinu.examples;
 
 import info.debatty.jinu.Case;
+import info.debatty.jinu.TestFactory;
+import info.debatty.jinu.TestInterface;
 
 /**
  *
@@ -52,7 +54,16 @@ public class TestCase1Iteration extends Case {
         super.commitToGit(false);
         setIterations(1);
         setParamValues(new double[]{2.0, 3.0, 4.0});
-        addTest(DummyTest.class);
-        addTest(DummyTest2.class);
+        addTest(new TestFactory() {
+            public TestInterface newInstance() {
+                return new DummyTest();
+            }
+        });
+
+        addTest(new TestFactory() {
+            public TestInterface newInstance() {
+                return new DummyTest2();
+            }
+        });
     }
 }

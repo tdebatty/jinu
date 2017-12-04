@@ -35,7 +35,7 @@ public final class TestInterval {
     private double param_value;
     private final SummaryStatistics[] values;
     private final SummaryStatistics runtime;
-    private TestInterface test;
+    private TestFactory test;
 
     /**
      *
@@ -84,7 +84,7 @@ public final class TestInterval {
      *
      * @return
      */
-    public TestInterface getTest() {
+    public TestFactory getTest() {
         return test;
     }
 
@@ -95,7 +95,7 @@ public final class TestInterval {
      * @return
      */
     public static TestInterval forResults(
-            final TestAndValue test_and_value,
+            final FactoryAndValue test_and_value,
             final List<TestResult> results) {
 
         int values_count = results.iterator().next().getValues().length;

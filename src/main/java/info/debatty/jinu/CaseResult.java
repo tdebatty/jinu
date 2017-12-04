@@ -54,8 +54,8 @@ public class CaseResult {
     private Case testcase;
     private final String[] classpath;
 
-    private HashMap<TestAndValue, List<TestResult>> results;
-    private final HashMap<TestInterface, String> sources;
+    private HashMap<FactoryAndValue, List<TestResult>> results;
+    private final HashMap<TestFactory, String> sources;
     private long runtime;
 
     /**
@@ -71,7 +71,7 @@ public class CaseResult {
         this.processors = Runtime.getRuntime().availableProcessors();
         this.memory = Runtime.getRuntime().maxMemory();
         this.time = System.currentTimeMillis();
-        this.sources = new HashMap<TestInterface, String>();
+        this.sources = new HashMap<TestFactory, String>();
 
         String classpath_string =
                 ManagementFactory
@@ -144,7 +144,7 @@ public class CaseResult {
      * @param results
      */
     public final void setResults(
-            final HashMap<TestAndValue, List<TestResult>> results) {
+            final HashMap<FactoryAndValue, List<TestResult>> results) {
         this.results = results;
     }
 
@@ -199,7 +199,7 @@ public class CaseResult {
      *
      * @return
      */
-    public final List<TestInterface> getTests() {
+    public final List<TestFactory> getTests() {
         return testcase.getTests();
     }
 
@@ -246,7 +246,7 @@ public class CaseResult {
      */
     public final List<TestInterval> getIntervals() {
         LinkedList<TestInterval> intervals = new LinkedList<TestInterval>();
-        for (TestAndValue test_and_value : results.keySet()) {
+        for (FactoryAndValue test_and_value : results.keySet()) {
             intervals.add(
                     TestInterval.forResults(
                             test_and_value,
@@ -274,8 +274,8 @@ public class CaseResult {
      * @return
      */
     public final double getSimilarity(
-            final TestInterface test,
-            final TestInterface other_test,
+            final TestFactory test,
+            final TestFactory other_test,
             final long result,
             final double param_value) {
 
@@ -283,13 +283,13 @@ public class CaseResult {
         double[] other_results = new double[testcase.getIterations()];
 
         int i = 0;
-        for (TestResult tr : results.get(new TestAndValue(test, param_value))) {
+        for (TestResult tr : results.get(new FactoryAndValue(test, param_value))) {
             test_results[i] = tr.getValue(result);
             i++;
         }
 
         i = 0;
-        TestAndValue test_and_value = new TestAndValue(other_test, param_value);
+        FactoryAndValue test_and_value = new FactoryAndValue(other_test, param_value);
         for (TestResult tr : results.get(test_and_value)) {
             other_results[i] = tr.getValue(result);
             i++;
@@ -304,7 +304,7 @@ public class CaseResult {
      * @param test
      * @return
      */
-    public final String getSource(final TestInterface test) {
+    public final String getSource(final TestFactory test) {
         return sources.get(test);
     }
 
@@ -313,7 +313,7 @@ public class CaseResult {
      * @param test
      * @param test_source
      */
-    final void addSource(final TestInterface test, final String test_source) {
+    final void addSource(final TestFactory test, final String test_source) {
         sources.put(test, test_source);
     }
 
@@ -324,14 +324,15 @@ public class CaseResult {
      */
     public final String getJsonDatasets(final long vid) {
 
-        HashMap<TestInterface, Dataset> datasets =
-                new HashMap<TestInterface, Dataset>();
+        HashMap<TestFactory, Dataset> datasets =
+                new HashMap<TestFactory, Dataset>();
         for (TestInterval interval : getIntervals()) {
 
-            TestInterface test = interval.getTest();
+            TestFactory test = interval.getTest();
             Dataset dataset = datasets.get(test);
             if (dataset == null) {
-                dataset = new Dataset(test.getClass().getSimpleName());
+                dataset = new Dataset(
+                        test.newInstance().getClass().getSimpleName());
                 datasets.put(test, dataset);
             }
             dataset.add(new XY(
@@ -349,14 +350,15 @@ public class CaseResult {
      */
     public final String getJsonTimeDataset() {
 
-        HashMap<TestInterface, Dataset> datasets =
-                new HashMap<TestInterface, Dataset>();
+        HashMap<TestFactory, Dataset> datasets =
+                new HashMap<TestFactory, Dataset>();
         for (TestInterval interval : getIntervals()) {
 
-            TestInterface test = interval.getTest();
+            TestFactory test = interval.getTest();
             Dataset dataset = datasets.get(test);
             if (dataset == null) {
-                dataset = new Dataset(test.getClass().getSimpleName());
+                dataset = new Dataset(
+                        test.newInstance().getClass().getSimpleName());
                 datasets.put(test, dataset);
             }
             dataset.add(new XY(

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016 Thibault Debatty.
+ * Copyright 2017 tibo.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,49 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package info.debatty.jinu.examples;
-
-import info.debatty.jinu.Case;
-import info.debatty.jinu.TestFactory;
-import info.debatty.jinu.TestInterface;
+package info.debatty.jinu;
 
 /**
  *
- * @author Thibault Debatty
+ * @author tibo
  */
-public class MyTestCase extends Case {
+public interface TestFactory {
 
     /**
-     * Run the tests.
-     * @param args
-     * @throws Exception if one of the tests fails.
+     * Create an new instance of the test.
+     *
+     * Each instance should (of course) be completely independent of each other.
+     * @return
      */
-    public static void main(final String[] args) throws Exception {
-
-        Case test = new MyTestCase();
-        test.setDescription("My test, with args: " + args.length);
-        test.run();
-    }
-
-    /**
-     * Default case.
-     */
-    public MyTestCase() {
-        super();
-        super.commitToGit(false);
-        setIterations(10);
-        setParamValues(new double[]{2.0, 3.0, 4.0});
-        addTest(new TestFactory() {
-            public TestInterface newInstance() {
-                return new DummyTest();
-            }
-        });
-
-        addTest(new TestFactory() {
-            public TestInterface newInstance() {
-                return new DummyTest2();
-            }
-        });
-    }
+    public TestInterface newInstance();
 }

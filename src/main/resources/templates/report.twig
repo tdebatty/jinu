@@ -100,7 +100,7 @@
 
                     {% for interval in report.getIntervals() %}
                         <tr>
-                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.test.newInstance().getClass().getName() }}</td>
                             <td>{{ interval.getParamValue() }}</td>
                             <td>mean</td>
                             {% for valueid in 0..vcount %}
@@ -110,7 +110,7 @@
                         </tr>
 
                         <tr>
-                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.test.newInstance().getClass().getName() }}</td>
                             <td>{{ interval.getParamValue() }}</td>
                             <td>std dev</td>
                             {% for valueid in 0..vcount %}
@@ -120,7 +120,7 @@
                         </tr>
 
                         <tr>
-                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.test.newInstance().getClass().getName() }}</td>
                             <td>{{ interval.getParamValue() }}</td>
                             <td>low</td>
                             {% for valueid in 0..vcount %}
@@ -130,7 +130,7 @@
                         </tr>
 
                         <tr>
-                            <td>{{ interval.test.getClass().getName() }}</td>
+                            <td>{{ interval.test.newInstance().getClass().getName() }}</td>
                             <td>{{ interval.getParamValue() }}</td>
                             <td>high</td>
                             {% for valueid in 0..vcount %}
@@ -166,13 +166,13 @@
                             <tr>
                                 <th></th>
                                 {% for test in report.getTests() %}
-                                    <th>{{ test.getClass().getName() }}</th>
+                                    <th>{{ test.newInstance().getClass().getName() }}</th>
                                 {% endfor %}
                             </tr>
 
                             {% for test in report.getTests() %}
                                 <tr>
-                                    <th>{{ test.getClass().getName() }}</th>
+                                    <th>{{ test.newInstance().getClass().getName() }}</th>
                                     {% for other_test in report.getTests() %}
                                         <td>{{ report.getSimilarity(test, other_test, valueid, param_value) }}</td>
                                     {% endfor %}
@@ -193,7 +193,7 @@
             <div class="collapse in" id="sources">
                 <h2>Sources</h2>
                 {% for test in report.getTests() %}
-                    <h3>{{ test.getClass().getName() }}</h3>
+                    <h3>{{ test.getInstance().getClass().getName() }}</h3>
                     <pre>
 {{ report.getSource(test) }}
                     </pre>
