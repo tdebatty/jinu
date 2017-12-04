@@ -195,7 +195,8 @@ public class Case implements Serializable {
             for (TestFactory factory : tests) {
                 TestInterface test = factory.newInstance();
                 for (double param_value : param_values) {
-                    FactoryAndValue key = new FactoryAndValue(factory, param_value);
+                    FactoryAndValue key =
+                            new FactoryAndValue(factory, param_value);
                     List<TestResult> resultset = results.get(key);
                     if (resultset == null) {
                         resultset = Collections.synchronizedList(

@@ -283,13 +283,15 @@ public class CaseResult {
         double[] other_results = new double[testcase.getIterations()];
 
         int i = 0;
-        for (TestResult tr : results.get(new FactoryAndValue(test, param_value))) {
+        for (TestResult tr : results.get(
+                new FactoryAndValue(test, param_value))) {
             test_results[i] = tr.getValue(result);
             i++;
         }
 
         i = 0;
-        FactoryAndValue test_and_value = new FactoryAndValue(other_test, param_value);
+        FactoryAndValue test_and_value =
+                new FactoryAndValue(other_test, param_value);
         for (TestResult tr : results.get(test_and_value)) {
             other_results[i] = tr.getValue(result);
             i++;

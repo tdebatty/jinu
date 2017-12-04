@@ -35,5 +35,5 @@ public interface TestFactory {
      * Each instance should (of course) be completely independent of each other.
      * @return
      */
-    public TestInterface newInstance();
+    TestInterface newInstance();
 }
