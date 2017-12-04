@@ -295,7 +295,7 @@ public class Case implements Serializable {
                 report.addSource(factory, builder.toString());
             } catch (IOException ex) {
                 LOGGER.info(
-                        "Cannot read source of {0}", clazz.getName());
+                        "Cannot read source of {}", clazz.getName());
             }
         }
 
